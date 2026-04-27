@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{MEDIA_NAME}} - 深度诊断看板</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f7fa; color: #333; padding: 20px; }
+.container { max-width: 1200px; margin: 0 auto; }
+.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 24px 32px; border-radius: 12px; margin-bottom: 24px; }
+.header h1 { font-size: 24px; margin-bottom: 8px; }
+.header .meta { font-size: 14px; opacity: 0.9; }
+.severity-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.severity-high { background: #ff4757; }
+.severity-medium { background: #ffa502; }
+.severity-low { background: #2ed573; }
+.section { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.section h2 { font-size: 18px; margin-bottom: 16px; color: #2d3436; border-left: 4px solid #667eea; padding-left: 12px; }
+.metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.metric-card { background: #f8f9fa; border-radius: 8px; padding: 16px; text-align: center; }
+.metric-card .label { font-size: 12px; color: #636e72; margin-bottom: 8px; }
+.metric-card .value { font-size: 20px; font-weight: 700; color: #2d3436; }
+.metric-card .change { font-size: 12px; margin-top: 4px; }
+.change-up { color: #2ed573; }
+.change-down { color: #ff4757; }
+.funnel { display: flex; flex-direction: column; gap: 8px; }
+.funnel-row { display: flex; align-items: center; gap: 16px; }
+.funnel-label { width: 100px; font-size: 13px; text-align: right; }
+.funnel-bar { height: 28px; border-radius: 4px; display: flex; align-items: center; padding: 0 8px; font-size: 11px; color: #fff; min-width: 40px; }
+.funnel-bar-d0 { background: #667eea; }
+.funnel-bar-d1 { background: #a29bfe; }
+.cause-card { background: #f8f9fa; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+.cause-card h3 { font-size: 14px; color: #636e72; margin-bottom: 8px; }
+.cause-card .title { font-size: 16px; font-weight: 600; color: #2d3436; }
+.cause-card .desc { font-size: 13px; color: #636e72; margin-top: 8px; }
+.progress-bar { height: 8px; background: #e9ecef; border-radius: 4px; margin-top: 8px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #667eea, #764ba2); }
+.chart-container { width: 100%; height: 300px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid #e9ecef; }
+th { background: #f8f9fa; font-weight: 600; color: #636e72; }
+.alert-row { background: #fff3cd; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>{{MEDIA_NAME}} - 深度诊断看板</h1>
+    <div class="meta">
+      诊断日期：{{PT_D}} | 对比日期：{{PT_D_1}} | 严重度：<span class="severity-badge severity-{{SEVERITY}}">{{SEVERITY_UPPER}}</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>核心指标概览</h2>
+    <div class="metrics-grid">
+      {{METRIC_CARDS}}
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>广告漏斗诊断</h2>
+    <div class="funnel">
+      {{FUNNEL_BARS}}
+    </div>
+    <p style="font-size:12px;color:#636e72;margin-top:12px;">紫色={{PT_D}}，浅紫={{PT_D_1}}</p>
+  </div>
+
+  <div class="section">
+    <h2>AI 归因结论</h2>
+    <div class="cause-card">
+      <h3>收入变化主因（贡献{{MAIN_CONTRIBUTION}}%）</h3>
+      <div class="title">{{MAIN_TITLE}}</div>
+      <div class="desc">{{MAIN_DESC}}</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:{{MAIN_CONTRIBUTION}}%"></div></div>
+    </div>
+    <div class="cause-card">
+      <h3>变化次因（贡献{{SUB_CONTRIBUTION}}%）</h3>
+      <div class="title">{{SUB_TITLE}}</div>
+      <div class="desc">{{SUB_DESC}}</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:{{SUB_CONTRIBUTION}}%"></div></div>
+    </div>
+    <div style="margin-top:16px;">
+      <p><strong>漏斗瓶颈：</strong>{{FUNNEL_BOTTLENECK}}</p>
+      <p><strong>eCPM诊断：</strong>{{ECPM_DIAGNOSIS}}</p>
+      <p><strong>用户行为：</strong>{{USER_BEHAVIOR}}</p>
+      <p><strong>过滤告警：</strong>{{FILTER_ALERT}}</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>近7天趋势</h2>
+    <div id="trendChart" class="chart-container"></div>
+  </div>
+
+  <div class="section">
+    <h2>对比分析</h2>
+    <h3 style="font-size:14px;margin:12px 0 8px;">量价拆解</h3>
+    <table>
+      <tr><th>指标</th><th>{{PT_D}}</th><th>{{PT_D_1}}</th><th>变化</th></tr>
+      {{VOLUME_PRICE_ROWS}}
+    </table>
+    <h3 style="font-size:14px;margin:16px 0 8px;">eCPM因子</h3>
+    <table>
+      <tr><th>因子</th><th>{{PT_D}}</th><th>{{PT_D_1}}</th><th>变化</th></tr>
+      {{ECPM_FACTOR_ROWS}}
+    </table>
+    <h3 style="font-size:14px;margin:16px 0 8px;">过滤指标</h3>
+    <table>
+      <tr><th>过滤类型</th><th>{{PT_D}}</th><th>{{PT_D_1}}</th><th>变化</th><th>状态</th></tr>
+      {{FILTER_ROWS}}
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>综合评估</h2>
+    <p>{{OVERALL_ASSESSMENT}}</p>
+  </div>
+</div>
+<script>
+var TREND_DATA = {{TREND_DATA_JSON}};
+var ANALYSIS = {{ANALYSIS_JSON}};
+var dates = TREND_DATA.map(d => d.pt_d);
+var chart = echarts.init(document.getElementById('trendChart'));
+chart.setOption({
+  tooltip: { trigger: 'axis' },
+  legend: { data: ['收入', '曝光量', 'eCPM', 'CTR'] },
+  xAxis: { type: 'category', data: dates },
+  yAxis: [
+    { type: 'value', name: '收入/曝光' },
+    { type: 'value', name: '比率(%)' }
+  ],
+  series: [
+    { name: '收入', type: 'line', data: TREND_DATA.map(d => d.ad_income), smooth: true },
+    { name: '曝光量', type: 'line', data: TREND_DATA.map(d => d.expo), smooth: true },
+    { name: 'eCPM', type: 'line', yAxisIndex: 1, data: TREND_DATA.map(d => d.ecpm), smooth: true },
+    { name: 'CTR', type: 'line', yAxisIndex: 1, data: TREND_DATA.map(d => d.ctr), smooth: true }
+  ]
+});
+</script>
+</body>
+</html>
+解释
