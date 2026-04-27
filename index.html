@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 智能助手 - 深度诊断看板</title>
+<script src="https://jsdelivr.net"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f7fa; color: #333; padding: 20px; }
+.container { max-width: 1200px; margin: 0 auto; }
+.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 24px 32px; border-radius: 12px; margin-bottom: 24px; }
+.header h1 { font-size: 24px; margin-bottom: 8px; }
+.header .meta { font-size: 14px; opacity: 0.9; }
+.severity-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.severity-high { background: #ff4757; }
+.severity-medium { background: #ffa502; }
+.severity-low { background: #2ed573; }
+.section { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.section h2 { font-size: 18px; margin-bottom: 16px; color: #2d3436; border-left: 4px solid #667eea; padding-left: 12px; }
+.metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.metric-card { background: #f8f9fa; border-radius: 8px; padding: 16px; text-align: center; }
+.metric-card .label { font-size: 12px; color: #636e72; margin-bottom: 8px; }
+.metric-card .value { font-size: 20px; font-weight: 700; color: #2d3436; }
+.metric-card .change { font-size: 12px; margin-top: 4px; }
+.change-up { color: #2ed573; }
+.change-down { color: #ff4757; }
+.funnel { display: flex; flex-direction: column; gap: 8px; }
+.funnel-row { display: flex; align-items: center; gap: 16px; }
+.funnel-label { width: 100px; font-size: 13px; text-align: right; }
+.funnel-bar { height: 28px; border-radius: 4px; display: flex; align-items: center; padding: 0 8px; font-size: 11px; color: #fff; min-width: 40px; }
+.funnel-bar-d0 { background: #667eea; }
+.funnel-bar-d1 { background: #a29bfe; }
+.cause-card { background: #f8f9fa; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+.cause-card h3 { font-size: 14px; color: #636e72; margin-bottom: 8px; }
+.cause-card .title { font-size: 16px; font-weight: 600; color: #2d3436; }
+.cause-card .desc { font-size: 13px; color: #636e72; margin-top: 8px; }
+.progress-bar { height: 8px; background: #e9ecef; border-radius: 4px; margin-top: 8px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #667eea, #764ba2); }
+.chart-container { width: 100%; height: 300px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid #e9ecef; }
+th { background: #f8f9fa; font-weight: 600; color: #636e72; }
+.alert-row { background: #fff3cd; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>广告流量 - 深度诊断看板</h1>
+    <div class="meta">
+      诊断日期：2023-10-27 | 对比日期：2023-10-26 | 严重度：<span class="severity-badge severity-medium">MEDIUM</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>核心指标概览</h2>
+    <div class="metrics-grid">
+      <div class="metric-card"><div class="label">收入</div><div class="value">¥12,450</div><div class="change change-up">↑ 12.5%</div></div>
+      <div class="metric-card"><div class="label">曝光量</div><div class="value">850,200</div><div class="change change-down">↓ 3.2%</div></div>
+      <div class="metric-card"><div class="label">eCPM</div><div class="value">¥14.64</div><div class="change change-up">↑ 5.8%</div></div>
+      <div class="metric-card"><div class="label">点击率(CTR)</div><div class="value">2.45%</div><div class="change change-up">↑ 0.1%</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>广告漏斗诊断</h2>
+    <div class="funnel">
+      <div class="funnel-row">
+        <div class="funnel-label">请求量</div>
+        <div class="funnel-bar funnel-bar-d0" style="width: 90%;">1,200,000 (今日)</div>
+      </div>
+      <div class="funnel-row">
+        <div class="funnel-label"></div>
+        <div class="funnel-bar funnel-bar-d1" style="width: 85%;">1,150,000 (昨日)</div>
+      </div>
+      <div class="funnel-row" style="margin-top:10px;">
+        <div class="funnel-label">填充量</div>
+        <div class="funnel-bar funnel-bar-d0" style="width: 70%;">950,000 (今日)</div>
+      </div>
+      <div class="funnel-row">
+        <div class="funnel-label"></div>
+        <div class="funnel-bar funnel-bar-d1" style="width: 72%;">980,000 (昨日)</div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:#636e72;margin-top:12px;">蓝色=2023-10-27，浅紫=2023-10-26</p>
+  </div>
+
+  <div class="section">
+    <h2>AI 归因结论</h2>
+    <div class="cause-card">
+      <h3>收入变化主因（贡献 65%）</h3>
+      <div class="title">eCPM 提升显著</div>
+      <div class="desc">主要受高端机型用户占比提升影响，带动整体出价水平上涨。</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:65%"></div></div>
+    </div>
+    <div class="cause-card">
+      <h3>变化次因（贡献 20%）</h3>
+      <div class="title">点击率微增</div>
+      <div class="desc">新上线的素材在 A/B Test 中表现优异，提升了用户点击意愿。</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div>
+    </div>
+    <div style="margin-top:16px;">
+      <p><strong>漏斗瓶颈：</strong>填充率在 14:00 出现波动，建议检查三方 DSP 稳定性。</p>
+      <p><strong>eCPM诊断：</strong>整体表现稳健，视频广告贡献了 80% 的增量。</p>
+      <p><strong>用户行为：</strong>留存用户贡献了主要的点击份额，新用户转化偏低。</p>
+      <p><strong>过滤告警：</strong>由于反作弊策略更新，无效请求过滤量上升 5%。</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>近7天趋势</h2>
+    <div id="trendChart" class="chart-container"></div>
+  </div>
+
+  <div class="section">
+    <h2>对比分析</h2>
+    <h3 style="font-size:14px;margin:12px 0 8px;">量价拆解</h3>
+    <table>
+      <tr><th>指标</th><th>2023-10-27</th><th>2023-10-26</th><th>变化</th></tr>
+      <tr><td>活跃用户</td><td>10.2W</td><td>10.1W</td><td>+1.0%</td></tr>
+      <tr><td>人均曝光</td><td>8.3</td><td>8.5</td><td>-2.3%</td></tr>
+    </table>
+    <h3 style="font-size:14px;margin:16px 0 8px;">eCPM因子</h3>
+    <table>
+      <tr><th>因子</th><th>2023-10-27</th><th>2023-10-26</th><th>变化</th></tr>
+      <tr class="alert-row"><td>素材转化率</td><td>1.2%</td><td>1.5%</td><td>-20% (告警)</td></tr>
+      <tr><td>竞价成功率</td><td>45%</td><td>42%</td><td>+3%</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>综合评估</h2>
+    <p>当前业务运行基本健康，核心指标收入呈上升态势。需关注填充率的细微下降，建议优化素材库以对冲点击率波动的风险。</p>
+  </div>
+</div>
+
+<script>
+// 模拟 JSON 数据
+var TREND_DATA = [
+  {pt_d: '10-21', ad_income: 11000, expo: 800000, ecpm: 13.5, ctr: 2.1},
+  {pt_d: '10-22', ad_income: 11500, expo: 820000, ecpm: 13.8, ctr: 2.2},
+  {pt_d: '10-23', ad_income: 10800, expo: 790000, ecpm: 13.2, ctr: 2.0},
+  {pt_d: '10-24', ad_income: 12000, expo: 840000, ecpm: 14.1, ctr: 2.3},
+  {pt_d: '10-25', ad_income: 12200, expo: 860000, ecpm: 14.4, ctr: 2.4},
+  {pt_d: '10-26', ad_income: 11800, expo: 850000, ecpm: 14.0, ctr: 2.3},
+  {pt_d: '10-27', ad_income: 12450, expo: 850200, ecpm: 14.6, ctr: 2.45}
+];
+
+var dates = TREND_DATA.map(d => d.pt_d);
+var chart = echarts.init(document.getElementById('trendChart'));
+chart.setOption({
+  tooltip: { trigger: 'axis' },
+  legend: { data: ['收入', '曝光量', 'eCPM', 'CTR'], bottom: 0 },
+  grid: { top: '15%', left: '3%', right: '4%', bottom: '15%', containLabel: true },
+  xAxis: { type: 'category', data: dates },
+  yAxis: [
+    { type: 'value', name: '金额/量级' },
+    { type: 'value', name: '比率(%)', max: 20 }
+  ],
+  series: [
+    { name: '收入', type: 'line', data: TREND_DATA.map(d => d.ad_income), smooth: true, color: '#667eea' },
+    { name: '曝光量', type: 'line', data: TREND_DATA.map(d => d.expo), smooth: true, color: '#764ba2' },
+    { name: 'eCPM', type: 'line', yAxisIndex: 1, data: TREND_DATA.map(d => d.ecpm), smooth: true, color: '#ffa502' },
+    { name: 'CTR', type: 'line', yAxisIndex: 1, data: TREND_DATA.map(d => d.ctr), smooth: true, color: '#2ed573' }
+  ]
+});
+</script>
+</body>
+</html>
