@@ -3,168 +3,927 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI 智能助手 - 深度诊断看板</title>
-<script src="https://jsdelivr.net"></script>
+<title>媒体广告收入深度诊断看板 - 2048大合成</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f7fa; color: #333; padding: 20px; }
-.container { max-width: 1200px; margin: 0 auto; }
-.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 24px 32px; border-radius: 12px; margin-bottom: 24px; }
-.header h1 { font-size: 24px; margin-bottom: 8px; }
-.header .meta { font-size: 14px; opacity: 0.9; }
-.severity-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-.severity-high { background: #ff4757; }
-.severity-medium { background: #ffa502; }
-.severity-low { background: #2ed573; }
-.section { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-.section h2 { font-size: 18px; margin-bottom: 16px; color: #2d3436; border-left: 4px solid #667eea; padding-left: 12px; }
-.metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-.metric-card { background: #f8f9fa; border-radius: 8px; padding: 16px; text-align: center; }
-.metric-card .label { font-size: 12px; color: #636e72; margin-bottom: 8px; }
-.metric-card .value { font-size: 20px; font-weight: 700; color: #2d3436; }
-.metric-card .change { font-size: 12px; margin-top: 4px; }
-.change-up { color: #2ed573; }
-.change-down { color: #ff4757; }
-.funnel { display: flex; flex-direction: column; gap: 8px; }
-.funnel-row { display: flex; align-items: center; gap: 16px; }
-.funnel-label { width: 100px; font-size: 13px; text-align: right; }
-.funnel-bar { height: 28px; border-radius: 4px; display: flex; align-items: center; padding: 0 8px; font-size: 11px; color: #fff; min-width: 40px; }
-.funnel-bar-d0 { background: #667eea; }
-.funnel-bar-d1 { background: #a29bfe; }
-.cause-card { background: #f8f9fa; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
-.cause-card h3 { font-size: 14px; color: #636e72; margin-bottom: 8px; }
-.cause-card .title { font-size: 16px; font-weight: 600; color: #2d3436; }
-.cause-card .desc { font-size: 13px; color: #636e72; margin-top: 8px; }
-.progress-bar { height: 8px; background: #e9ecef; border-radius: 4px; margin-top: 8px; overflow: hidden; }
-.progress-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #667eea, #764ba2); }
-.chart-container { width: 100%; height: 300px; }
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid #e9ecef; }
-th { background: #f8f9fa; font-weight: 600; color: #636e72; }
-.alert-row { background: #fff3cd; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: #F5F7FA;
+    color: #1D2129;
+}
+.container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+/* Header */
+.header {
+    background: linear-gradient(135deg, #165DFF 0%, #4080FF 100%);
+    color: #fff;
+    padding: 24px 32px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+.header h1 { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
+.header-meta { display: flex; gap: 24px; font-size: 14px; opacity: 0.9; flex-wrap: wrap; align-items: center; }
+.header-meta span { display: flex; align-items: center; gap: 4px; }
+.badge-high { background: #F53F3F; color: #fff; padding: 2px 10px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+.badge-medium { background: #FF7D00; color: #fff; padding: 2px 10px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+.badge-low { background: #00B42A; color: #fff; padding: 2px 10px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+
+/* Cards */
+.card {
+    background: #fff;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+.card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1D2129;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #F2F3F5;
+}
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1D2129;
+    margin-bottom: 16px;
+    padding-left: 10px;
+    border-left: 3px solid #165DFF;
+}
+
+/* Metric Grid */
+.metric-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+.metric-item {
+    padding: 12px;
+    border-radius: 6px;
+    background: #F7F8FA;
+}
+.metric-label { font-size: 12px; color: #86909C; margin-bottom: 4px; }
+.metric-value { font-size: 20px; font-weight: 600; color: #1D2129; }
+.metric-change { font-size: 12px; margin-top: 4px; }
+.metric-change.down { color: #F53F3F; }
+.metric-change.up { color: #00B42A; }
+.metric-change.neutral { color: #86909C; }
+
+/* 漏斗样式（悠游趣行风格） */
+.funnel-wrapper { padding: 4px 0; }
+.funnel-header {
+    display: grid; grid-template-columns: 1fr 80px 1fr;
+    text-align: center; margin-bottom: 8px; font-size: 12px; color: #86909C;
+}
+.funnel-body {
+    display: grid; grid-template-columns: 1fr 80px 1fr; gap: 0; align-items: center;
+}
+.funnel-col { display: flex; flex-direction: column; gap: 3px; }
+.funnel-col-label { align-items: center; }
+.funnel-step {
+    position: relative; padding: 10px 16px; border-radius: 4px;
+    display: flex; justify-content: space-between; align-items: center;
+    color: #fff; font-size: 12px; font-weight: 500;
+    transition: all 0.2s; cursor: default;
+}
+.funnel-step:hover { filter: brightness(1.1); transform: scale(1.02); }
+.funnel-step .step-name { font-weight: 600; font-size: 13px; }
+.funnel-step .step-val { font-size: 11px; opacity: 0.9; }
+.funnel-step .step-chg { position: absolute; right: 8px; top: -1px; font-size: 10px;
+    background: rgba(0,0,0,0.25); border-radius: 3px; padding: 1px 5px; }
+.funnel-step.step-gray { background: #C9CDD4 !important; color: #4E5969; }
+.funnel-arrow {
+    text-align: center; color: #C9CDD4; font-size: 18px; line-height: 30px;
+}
+.funnel-label-item {
+    text-align: center; font-size: 11px; color: #86909C; padding: 10px 4px;
+    line-height: 1.3;
+}
+.funnel-label-item .rate { display: block; font-size: 10px; color: #165DFF; margin-top: 2px; }
+
+/* 结论框 */
+.conclusion-box {
+    background: #FFF2F0;
+    border: 1px solid #FDCCC5;
+    border-radius: 8px;
+    padding: 20px;
+}
+.cause-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+.cause-item:last-child { margin-bottom: 0; }
+.cause-bar {
+    width: 80px;
+    flex-shrink: 0;
+}
+.cause-bar-label { font-size: 12px; color: #86909C; text-align: center; }
+.cause-bar-track {
+    height: 6px;
+    background: #F2F3F5;
+    border-radius: 3px;
+    margin-top: 4px;
+    overflow: hidden;
+}
+.cause-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: #F53F3F;
+}
+.cause-content { flex: 1; }
+.cause-title { font-size: 14px; font-weight: 600; color: #1D2129; margin-bottom: 4px; }
+.cause-desc { font-size: 13px; color: #4E5969; line-height: 1.6; }
+.cause-suggestion {
+    margin-top: 6px;
+    font-size: 12px;
+    color: #0FC6C2;
+    background: #E6FFFB;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+/* Sparkline Grid */
+.sparkline-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+.sparkline-card {
+    border: 1px solid #E5E7EB;
+    border-radius: 6px;
+    padding: 12px;
+}
+.sparkline-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.sparkline-title { font-size: 13px; color: #86909C; }
+.sparkline-val { font-size: 18px; font-weight: 600; }
+.sparkline-chart { height: 60px; }
+
+/* Chart Grid */
+.chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+.chart-container { height: 300px; }
+
+/* 大盘对比表格 */
+.compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+.compare-table th, .compare-table td {
+    padding: 8px 12px;
+    text-align: center;
+    border-bottom: 1px solid #F2F3F5;
+}
+.compare-table th { background: #F7F8FA; color: #86909C; font-weight: 500; }
+.compare-table td:first-child { text-align: left; font-weight: 500; }
+.compare-table .down { color: #F53F3F; font-weight: 600; }
+.compare-table .up { color: #00B42A; font-weight: 600; }
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 16px;
+    font-size: 12px;
+    color: #86909C;
+    margin-top: 20px;
+}
+.diag-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 8px; }
+.diag-item { background: #F7F8FA; border-radius: 8px; padding: 12px 16px; }
+.diag-item .diag-label { font-size: 12px; color: #86909C; margin-bottom: 4px; font-weight: 600; }
+.diag-item .diag-value { font-size: 13px; color: #1D2129; line-height: 1.6; }
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="header">
-    <h1>广告流量 - 深度诊断看板</h1>
-    <div class="meta">
-      诊断日期：2023-10-27 | 对比日期：2023-10-26 | 严重度：<span class="severity-badge severity-medium">MEDIUM</span>
-    </div>
-  </div>
 
-  <div class="section">
-    <h2>核心指标概览</h2>
-    <div class="metrics-grid">
-      <div class="metric-card"><div class="label">收入</div><div class="value">¥12,450</div><div class="change change-up">↑ 12.5%</div></div>
-      <div class="metric-card"><div class="label">曝光量</div><div class="value">850,200</div><div class="change change-down">↓ 3.2%</div></div>
-      <div class="metric-card"><div class="label">eCPM</div><div class="value">¥14.64</div><div class="change change-up">↑ 5.8%</div></div>
-      <div class="metric-card"><div class="label">点击率(CTR)</div><div class="value">2.45%</div><div class="change change-up">↑ 0.1%</div></div>
+<!-- Header -->
+<div class="header">
+    <h1>媒体广告收入深度诊断看板</h1>
+    <div class="header-meta">
+        <span>媒体：2048大合成</span>
+        <span>诊断日期：20260426</span>
+        <span class="badge-low">严重度：低</span>
+        <span>环比 6.59% | 周同比 9.25%</span>
     </div>
-  </div>
+</div>
 
-  <div class="section">
-    <h2>广告漏斗诊断</h2>
-    <div class="funnel">
-      <div class="funnel-row">
-        <div class="funnel-label">请求量</div>
-        <div class="funnel-bar funnel-bar-d0" style="width: 90%;">1,200,000 (今日)</div>
-      </div>
-      <div class="funnel-row">
-        <div class="funnel-label"></div>
-        <div class="funnel-bar funnel-bar-d1" style="width: 85%;">1,150,000 (昨日)</div>
-      </div>
-      <div class="funnel-row" style="margin-top:10px;">
-        <div class="funnel-label">填充量</div>
-        <div class="funnel-bar funnel-bar-d0" style="width: 70%;">950,000 (今日)</div>
-      </div>
-      <div class="funnel-row">
-        <div class="funnel-label"></div>
-        <div class="funnel-bar funnel-bar-d1" style="width: 72%;">980,000 (昨日)</div>
-      </div>
+<!-- 1. 核心指标概览 -->
+<div class="card">
+    <div class="card-title">核心指标概览</div>
+    <div class="metric-grid" id="metricGrid">
+        <div class="metric-item">
+                <div class="metric-label">广告收入</div>
+                <div class="metric-value">1,863</div>
+                <div class="metric-change up">环比 +6.59%</div>
+            </div><div class="metric-item">
+                <div class="metric-label">广告位请求量</div>
+                <div class="metric-value">6.0万</div>
+                <div class="metric-change up">环比 +1.34%</div>
+            </div><div class="metric-item">
+                <div class="metric-label">广告曝光量</div>
+                <div class="metric-value">3.8万</div>
+                <div class="metric-change down">环比 -4.78%</div>
+            </div><div class="metric-item">
+                <div class="metric-label">直投参竞率</div>
+                <div class="metric-value">89.53%</div>
+                <div class="metric-change down">环比 -1.18%</div>
+            </div><div class="metric-item">
+                <div class="metric-label">DSP参竞率</div>
+                <div class="metric-value">67.18%</div>
+                <div class="metric-change down">环比 -0.64%</div>
+            </div><div class="metric-item">
+                <div class="metric-label">广告位填充率</div>
+                <div class="metric-value">95.33%</div>
+                <div class="metric-change down">环比 -0.43%</div>
+            </div><div class="metric-item">
+                <div class="metric-label">广告eCPM</div>
+                <div class="metric-value">48.55</div>
+                <div class="metric-change up">环比 +11.94%</div>
+            </div><div class="metric-item">
+                <div class="metric-label">CTR</div>
+                <div class="metric-value">20.62%</div>
+                <div class="metric-change up">环比 +6.31%</div>
+            </div>
     </div>
-    <p style="font-size:12px;color:#636e72;margin-top:12px;">蓝色=2023-10-27，浅紫=2023-10-26</p>
-  </div>
+</div>
 
-  <div class="section">
-    <h2>AI 归因结论</h2>
-    <div class="cause-card">
-      <h3>收入变化主因（贡献 65%）</h3>
-      <div class="title">eCPM 提升显著</div>
-      <div class="desc">主要受高端机型用户占比提升影响，带动整体出价水平上涨。</div>
-      <div class="progress-bar"><div class="progress-fill" style="width:65%"></div></div>
+<!-- 2. 广告链路漏斗诊断（请求粒度） -->
+<div class="card">
+    <div class="card-title">广告链路漏斗诊断</div>
+    <div class="funnel-wrapper">
+        <div class="funnel-header">
+            <span class="funnel-header-d0">当日 20260426（颜色=状态）</span>
+            <span></span>
+            <span class="funnel-header-d1">前日 20260425（灰色基准）</span>
+        </div>
+        <div class="funnel-body">
+            <div class="funnel-col funnel-col-d0" id="funnelD0"></div>
+            <div class="funnel-col funnel-col-label" id="funnelLabel"></div>
+            <div class="funnel-col funnel-col-d1" id="funnelD1"></div>
+        </div>
     </div>
-    <div class="cause-card">
-      <h3>变化次因（贡献 20%）</h3>
-      <div class="title">点击率微增</div>
-      <div class="desc">新上线的素材在 A/B Test 中表现优异，提升了用户点击意愿。</div>
-      <div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div>
+</div>
+
+<!-- 3. AI 归因结论 -->
+<div class="card">
+    <div class="card-title">AI 归因结论</div>
+    <div class="conclusion-box">
+        <div class="cause-item">
+            <div class="cause-bar">
+                <div class="cause-bar-label">65%</div>
+                <div class="cause-bar-track"><div class="cause-bar-fill" style="width:65%"></div></div>
+            </div>
+            <div class="cause-content">
+                <div class="cause-title">主因：eCPM大幅上升驱动收入增长</div>
+                <div class="cause-desc">收入从1,747.86升至1,863.09（环比+6.6%），连环替代法显示eCPM贡献+121.37（占收入变化的主导地位）。eCPM从43.37升至48.55（+11.9%），四因子拆解：广告主出价均值从18.63升至20.12（+8.0%），pCVR从0.0417升至0.0446（+7.0%），factor从0.8809升至0.8999（+2.2%），pCTR从0.2560升至0.2601（+1.6%）。出价和pCVR是eCPM上升的核心驱动力。一阶出价均值从360238.34降至378230.47（实际为总量），二阶出价总量72732768000 vs 70604352499（+3.0%），说明广告主竞争强度上升。</div>
+                <div class="cause-suggestion">1) 确认是否有高价值广告主新增投放或加价策略变更；2) 检查pCVR模型是否近期有更新迭代，AUC指标是否提升；3) 关注eCPM上升趋势是否可持续，若为短期竞争加剧则可能回落。</div>
+            </div>
+        </div>
+        <div class="cause-item">
+            <div class="cause-bar">
+                <div class="cause-bar-label">-30%</div>
+                <div class="cause-bar-track"><div class="cause-bar-fill" style="width:-30%;background:#FF7D00"></div></div>
+            </div>
+            <div class="cause-content">
+                <div class="cause-title">次因：展示率下降部分抵消收入增长</div>
+                <div class="cause-desc">展示率从70.58%降至66.59%（-5.7%），连环替代法贡献-59.80。直投展示率从16.32%降至15.28%（-6.4%），DSP展示率从20.89%降至19.54%（-6.5%），双通道同步下降。曝光失败原因中30079错误码35270 vs 35209（+0.2%），30014错误码6478 vs 6273（+3.3%），30094错误码882 vs 983（-10.3%），失败总量变化不大。请求量+1.3%但曝光量-4.8%，说明展示环节确实存在效率损失。</div>
+                <div class="cause-suggestion">1) 排查客户端渲染效率是否有波动（版本更新/网络环境）；2) 检查30014错误码（+3.3%）的具体含义，是否为新增的展示限制；3) 虽然展示率下降，但eCPM提升更多，总体收入仍为正增长。</div>
+            </div>
+        </div>
     </div>
-    <div style="margin-top:16px;">
-      <p><strong>漏斗瓶颈：</strong>填充率在 14:00 出现波动，建议检查三方 DSP 稳定性。</p>
-      <p><strong>eCPM诊断：</strong>整体表现稳健，视频广告贡献了 80% 的增量。</p>
-      <p><strong>用户行为：</strong>留存用户贡献了主要的点击份额，新用户转化偏低。</p>
-      <p><strong>过滤告警：</strong>由于反作弊策略更新，无效请求过滤量上升 5%。</p>
+    <!-- 大盘对比（波动幅度对比） -->
+    <div style="margin-top: 16px;">
+        <div style="font-size: 14px; font-weight: 600; margin-bottom: 8px;">大盘对比（媒体波动 vs 大盘波动）</div>
+        <div id="chart-market-compare" style="height:280px;"></div>
     </div>
-  </div>
+</div>
 
-  <div class="section">
-    <h2>近7天趋势</h2>
-    <div id="trendChart" class="chart-container"></div>
-  </div>
+<!-- 4. 近7天趋势分析 -->
+<div class="section-title">近7天趋势分析</div>
+<div class="card">
+    <div class="sparkline-grid">
+        <div class="sparkline-card">
+            <div class="sparkline-header">
+                <span class="sparkline-title">收入趋势</span>
+                <span class="sparkline-val">1,863</span>
+            </div>
+            <div id="chart-income-trend" class="sparkline-chart"></div>
+        </div>
+        <div class="sparkline-card">
+            <div class="sparkline-header">
+                <span class="sparkline-title">eCPM趋势</span>
+                <span class="sparkline-val">48.55</span>
+            </div>
+            <div id="chart-ecpm-trend" class="sparkline-chart"></div>
+        </div>
+        <div class="sparkline-card">
+            <div class="sparkline-header">
+                <span class="sparkline-title">请求量趋势</span>
+                <span class="sparkline-val">6.0万</span>
+            </div>
+            <div id="chart-req-trend" class="sparkline-chart"></div>
+        </div>
+        <div class="sparkline-card">
+            <div class="sparkline-header">
+                <span class="sparkline-title">填充率趋势</span>
+                <span class="sparkline-val">95.33%</span>
+            </div>
+            <div id="chart-fill-trend" class="sparkline-chart"></div>
+        </div>
+    </div>
+</div>
 
-  <div class="section">
-    <h2>对比分析</h2>
-    <h3 style="font-size:14px;margin:12px 0 8px;">量价拆解</h3>
-    <table>
-      <tr><th>指标</th><th>2023-10-27</th><th>2023-10-26</th><th>变化</th></tr>
-      <tr><td>活跃用户</td><td>10.2W</td><td>10.1W</td><td>+1.0%</td></tr>
-      <tr><td>人均曝光</td><td>8.3</td><td>8.5</td><td>-2.3%</td></tr>
-    </table>
-    <h3 style="font-size:14px;margin:16px 0 8px;">eCPM因子</h3>
-    <table>
-      <tr><th>因子</th><th>2023-10-27</th><th>2023-10-26</th><th>变化</th></tr>
-      <tr class="alert-row"><td>素材转化率</td><td>1.2%</td><td>1.5%</td><td>-20% (告警)</td></tr>
-      <tr><td>竞价成功率</td><td>45%</td><td>42%</td><td>+3%</td></tr>
-    </table>
-  </div>
+<!-- 5. 对比分析 -->
+<div class="section-title">对比分析</div>
 
-  <div class="section">
-    <h2>综合评估</h2>
-    <p>当前业务运行基本健康，核心指标收入呈上升态势。需关注填充率的细微下降，建议优化素材库以对冲点击率波动的风险。</p>
-  </div>
+<!-- 5.1 广告漏斗对比（三日期） -->
+<div class="card">
+    <div class="card-title">广告漏斗对比（20260426 vs 20260425 vs 20260419）</div>
+    <div id="chart-funnel" class="chart-container"></div>
+</div>
+
+<!-- 5.2 收入波动贡献归因（瀑布图） -->
+<div class="card">
+    <div class="card-title">收入波动贡献归因</div>
+    <div id="chart-waterfall" class="chart-container"></div>
+</div>
+
+<!-- 5.3 eCPM 因子拆解 -->
+<div class="card">
+    <div class="card-title">eCPM因子拆解（20260426 vs 20260425 变化率）</div>
+    <div id="chart-ecpm-factor" class="chart-container" style="height:280px"></div>
+</div>
+
+<!-- 5.4 失败原因分布 -->
+<div class="card">
+    <div class="card-title">失败原因分布</div>
+    <div class="chart-grid">
+        <div>
+            <div style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">DSP不参竞原因</div>
+            <div id="chart-dsp-reason" class="chart-container" style="height: 280px;"></div>
+        </div>
+        <div>
+            <div style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">曝光失败原因</div>
+            <div id="chart-error-code" class="chart-container" style="height: 280px;"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 6. 综合评估 -->
+<div class="card">
+    <div class="card-title">综合评估</div>
+    <div style="font-size:14px; line-height:1.8; color:#4E5969; white-space:pre-line;">
+        媒体2048大合成在20260426的广告收入为1,863.09元，环比+6.6%（+115.23），周同比+9.3%。问题定性：收入上升为媒体特有表现，大盘同期微跌-0.6%。影响范围：直投收入1,352.61（+16.5%），DSP收入510.47（-13.0%），直投是收入增长主引擎。严重程度：medium（收入上升>5%，需关注可持续性）。趋势预判：呈现典型周末高峰/工作日低谷周期性，0425-0426为周末高峰期，收入上升符合周期规律，预计0427起将回落。最关键行动建议：1) 关注eCPM上升趋势是否可持续（当前48.55 vs 周均值约50），若为竞争加剧则可能回落；2) 排查展示率下降原因（70.58%→66.59%），如果持续恶化会影响后续收入。漏斗瓶颈在展示环节，但被eCPM提升覆盖。
+    </div>
+</div>
+
+<!-- 7. 多维诊断详情 -->
+<div class="card">
+    <div class="card-title">多维诊断详情</div>
+    <div class="diag-grid">
+        <div class="diag-item">
+            <div class="diag-label">漏斗瓶颈</div>
+            <div class="diag-value">第5层-广告位展示率-5.7%（双通道直投-6.4%/DSP-6.5%同步下降）</div>
+        </div>
+        <div class="diag-item">
+            <div class="diag-label">eCPM 归因</div>
+            <div class="diag-value">直投eCPM上升11.9%（43.37→48.55），主因广告主出价+8.0%（18.63→20.12），次因pCVR+7.0%（0.0417→0.0446），factor+2.2%，pCTR+1.6%。四因子全面正向贡献。</div>
+        </div>
+        <div class="diag-item">
+            <div class="diag-label">过滤异常</div>
+            <div class="diag-value">无过滤异常。所有直投/DSP过滤指标环比变化均在±5%以内，dyfpf底价过滤-0.6%，dypf位置过滤+1.2%，dyef异常过滤0，过滤策略无变化。</div>
+        </div>
+        <div class="diag-item">
+            <div class="diag-label">大盘对比</div>
+            <div class="diag-value">大盘收入环比-0.6%（3342.76万→3363.95万微跌），媒体收入+6.6%，显著优于大盘。大盘eCPM约8.23 vs 媒体48.55，媒体变现效率远超大盘。大盘填充率56.85% vs 媒体95.33%。收入上升为媒体特有表现。</div>
+        </div>
+        <div class="diag-item">
+            <div class="diag-label">趋势分析</div>
+            <div class="diag-value">收入趋势：0419=1705→0420=1372（-19.6%周末低谷）→0421=1286→0422=1217→0423=1351→0424=1343→0425=1748（+30.1%周末回升）→0426=1863（+6.6%）。呈现典型的周末高峰/工作日低谷周期性波动。eCPM从0420的55.9逐步回落至0425的43.4后反弹至48.6，波动较大。</div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    生成时间：2026-04-29 12:58:34 | 数据来源：dm_ads.dm_ads_traffic_analysis_report_inc_d | 本报告由 AI 自动生成，仅供参考
+</div>
+
 </div>
 
 <script>
-// 模拟 JSON 数据
-var TREND_DATA = [
-  {pt_d: '10-21', ad_income: 11000, expo: 800000, ecpm: 13.5, ctr: 2.1},
-  {pt_d: '10-22', ad_income: 11500, expo: 820000, ecpm: 13.8, ctr: 2.2},
-  {pt_d: '10-23', ad_income: 10800, expo: 790000, ecpm: 13.2, ctr: 2.0},
-  {pt_d: '10-24', ad_income: 12000, expo: 840000, ecpm: 14.1, ctr: 2.3},
-  {pt_d: '10-25', ad_income: 12200, expo: 860000, ecpm: 14.4, ctr: 2.4},
-  {pt_d: '10-26', ad_income: 11800, expo: 850000, ecpm: 14.0, ctr: 2.3},
-  {pt_d: '10-27', ad_income: 12450, expo: 850200, ecpm: 14.6, ctr: 2.45}
-];
+// === 趋势数据 ===
+const TREND = [{"pt_d": "20260419", "ad_income": "1705.3646700000", "expo": "51679", "billing": "1705.3646700000", "req": "75118", "eff_req": "75118", "eff_ret": "69611", "click_qty": "10097", "conv_qty": "695", "recall": "6918528", "dysb": "2762921", "dymsrs": "171685", "dyrsb": "171627", "dyrss": "10165", "b_dsp": "23965", "ecpm": "32.999180905000", "ctr": "19.537916755355173", "cvr": "6.883232643359413", "fill_rate": "92.66886764823344", "dy_comp_rate": "39.93509891121349", "mix_win_rate": "6.213894642662603"}, {"pt_d": "20260420", "ad_income": "1371.8435640000", "expo": "24543", "billing": "1371.8435640000", "req": "43846", "eff_req": "43846", "eff_ret": "41912", "click_qty": "5193", "conv_qty": "461", "recall": "3764627", "dysb": "1618102", "dymsrs": "101317", "dyrsb": "101315", "dyrss": "6220", "b_dsp": "14306", "ecpm": "55.895512529000", "ctr": "21.15878254492116", "cvr": "8.87733487386867", "fill_rate": "95.58910733020116", "dy_comp_rate": "42.98173497666568", "mix_win_rate": "6.261471773720075"}, {"pt_d": "20260421", "ad_income": "1285.7412440000", "expo": "21189", "billing": "1285.7412440000", "req": "37269", "eff_req": "37269", "eff_ret": "35701", "click_qty": "4441", "conv_qty": "464", "recall": "3305233", "dysb": "1362465", "dymsrs": "89422", "dyrsb": "89403", "dyrss": "5715", "b_dsp": "11914", "ecpm": "60.679656614000", "ctr": "20.95898815423097", "cvr": "10.448097275388427", "fill_rate": "95.79275000670798", "dy_comp_rate": "41.22145095368466", "mix_win_rate": "6.563251166085"}, {"pt_d": "20260422", "ad_income": "1217.0563250000", "expo": "22532", "billing": "1217.0563250000", "req": "40812", "eff_req": "40812", "eff_ret": "39116", "click_qty": "4521", "conv_qty": "467", "recall": "3471247", "dysb": "1506352", "dymsrs": "96108", "dyrsb": "96052", "dyrss": "5843", "b_dsp": "12844", "ecpm": "54.014571498000", "ctr": "20.06479673353453", "cvr": "10.329573103295731", "fill_rate": "95.84435950210722", "dy_comp_rate": "43.39512572859264", "mix_win_rate": "6.380182055721371"}, {"pt_d": "20260423", "ad_income": "1350.5709340000", "expo": "20578", "billing": "1350.5709340000", "req": "38832", "eff_req": "38832", "eff_ret": "37304", "click_qty": "4497", "conv_qty": "465", "recall": "3409631", "dysb": "1421986", "dymsrs": "93092", "dyrsb": "93090", "dyrss": "5970", "b_dsp": "11688", "ecpm": "65.631788026000", "ctr": "21.85343570803771", "cvr": "10.340226817878586", "fill_rate": "96.06510094767202", "dy_comp_rate": "41.70498215202759", "mix_win_rate": "6.546618602433497"}, {"pt_d": "20260424", "ad_income": "1342.5400180000", "expo": "21277", "billing": "1342.5400180000", "req": "38075", "eff_req": "38075", "eff_ret": "36907", "click_qty": "4538", "conv_qty": "449", "recall": "3410038", "dysb": "1361654", "dymsrs": "89563", "dyrsb": "89520", "dyrss": "5658", "b_dsp": "11061", "ecpm": "63.098181981000", "ctr": "21.32819476429948", "cvr": "9.894226531511679", "fill_rate": "96.93237032173342", "dy_comp_rate": "39.93075736985922", "mix_win_rate": "6.577515286555909"}, {"pt_d": "20260425", "ad_income": "1747.8617100000", "expo": "40298", "billing": "1747.8617100000", "req": "59636", "eff_req": "59636", "eff_ret": "57099", "click_qty": "7816", "conv_qty": "586", "recall": "4799963", "dysb": "2184351", "dymsrs": "138833", "dyrsb": "138827", "dyrss": "7987", "b_dsp": "18662", "ecpm": "43.373410839000", "ctr": "19.39550349893295", "cvr": "7.497441146366428", "fill_rate": "95.74585820645248", "dy_comp_rate": "45.50766328823785", "mix_win_rate": "6.355800876324364"}, {"pt_d": "20260426", "ad_income": "1863.0870960000", "expo": "38373", "billing": "1863.0870960000", "req": "60435", "eff_req": "60435", "eff_ret": "57615", "click_qty": "7912", "conv_qty": "626", "recall": "5254571", "dysb": "2170771", "dymsrs": "143660", "dyrsb": "143544", "dyrss": "8330", "b_dsp": "18691", "ecpm": "48.552031272000", "ctr": "20.618664164907617", "cvr": "7.912032355915066", "fill_rate": "95.33382973442541", "dy_comp_rate": "41.312050022732585", "mix_win_rate": "6.617925151939104"}];
+const dates = TREND.map(d => d.pt_d);
 
-var dates = TREND_DATA.map(d => d.pt_d);
-var chart = echarts.init(document.getElementById('trendChart'));
-chart.setOption({
-  tooltip: { trigger: 'axis' },
-  legend: { data: ['收入', '曝光量', 'eCPM', 'CTR'], bottom: 0 },
-  grid: { top: '15%', left: '3%', right: '4%', bottom: '15%', containLabel: true },
-  xAxis: { type: 'category', data: dates },
-  yAxis: [
-    { type: 'value', name: '金额/量级' },
-    { type: 'value', name: '比率(%)', max: 20 }
-  ],
-  series: [
-    { name: '收入', type: 'line', data: TREND_DATA.map(d => d.ad_income), smooth: true, color: '#667eea' },
-    { name: '曝光量', type: 'line', data: TREND_DATA.map(d => d.expo), smooth: true, color: '#764ba2' },
-    { name: 'eCPM', type: 'line', yAxisIndex: 1, data: TREND_DATA.map(d => d.ecpm), smooth: true, color: '#ffa502' },
-    { name: 'CTR', type: 'line', yAxisIndex: 1, data: TREND_DATA.map(d => d.ctr), smooth: true, color: '#2ed573' }
-  ]
-});
+function fmt(v) {
+    if (v >= 100000000) return (v / 100000000).toFixed(2) + '亿';
+    if (v >= 10000) return (v / 10000).toFixed(1) + '万';
+    if (v >= 1000) return (v / 1000).toFixed(1) + '千';
+    return v.toFixed ? v.toFixed(0) : v;
+}
+
+function makeSparkline(id, data, color) {
+    const chart = echarts.init(document.getElementById(id));
+    chart.setOption({
+        grid: { left: 0, right: 0, top: 4, bottom: 4 },
+        xAxis: { type: 'category', show: false, data: dates },
+        yAxis: { type: 'value', show: false },
+        series: [{
+            type: 'line', data: data, smooth: true, symbol: 'none',
+            lineStyle: { width: 2, color: color },
+            areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: color + '40' },
+                { offset: 1, color: color + '05' }
+            ])}
+        }]
+    });
+    window.addEventListener('resize', () => chart.resize());
+}
+
+// 趋势图：收入、eCPM、请求量、填充率
+makeSparkline('chart-income-trend', TREND.map(d => d.ad_income), '#F53F3F');
+makeSparkline('chart-ecpm-trend', TREND.map(d => d.ecpm), '#FF7D00');
+makeSparkline('chart-req-trend', TREND.map(d => d.req), '#4080FF');
+makeSparkline('chart-fill-trend', TREND.map(d => d.fill_rate), '#00B42A');
+
+// === 漏斗渲染（悠游趣行风格） ===
+(function renderFunnel() {
+    var steps = [
+        { name: '请求量', d0: [60435, 54108, 40603, 50577, 26221, 57615, 38373, 8112, 626, 1863.09][0], d1: [59636, 54030, 40323, 50321, 26321, 57099, 40298, 8020, 586, 1747.86][0] },
+        { name: '参竞(直投)', d0: [60435, 54108, 40603, 50577, 26221, 57615, 38373, 8112, 626, 1863.09][1], d1: [59636, 54030, 40323, 50321, 26321, 57099, 40298, 8020, 586, 1747.86][1] },
+        { name: '参竞(DSP)', d0: [60435, 54108, 40603, 50577, 26221, 57615, 38373, 8112, 626, 1863.09][2], d1: [59636, 54030, 40323, 50321, 26321, 57099, 40298, 8020, 586, 1747.86][2] },
+        { name: '返回(直投)', d0: [60435, 54108, 40603, 50577, 26221, 57615, 38373, 8112, 626, 1863.09][3], d1: [59636, 54030, 40323, 50321, 26321, 57099, 40298, 8020, 586, 1747.86][3] },
+        { name: '返回(DSP)', d0: [60435, 54108, 40603, 50577, 26221, 57615, 38373, 8112, 626, 1863.09][4], d1: [59636, 54030, 40323, 50321, 26321, 57099, 40298, 8020, 586, 1747.86][4] },
+        { name: '广告位返回', d0: [60435, 54108, 40603, 50577, 26221, 57615, 38373, 8112, 626, 1863.09][5], d1: [59636, 54030, 40323, 50321, 26321, 57099, 40298, 8020, 586, 1747.86][5] },
+        { name: '曝光', d0: [60435, 54108, 40603, 50577, 26221, 57615, 38373, 8112, 626, 1863.09][6], d1: [59636, 54030, 40323, 50321, 26321, 57099, 40298, 8020, 586, 1747.86][6] },
+        { name: '点击', d0: [60435, 54108, 40603, 50577, 26221, 57615, 38373, 8112, 626, 1863.09][7], d1: [59636, 54030, 40323, 50321, 26321, 57099, 40298, 8020, 586, 1747.86][7] },
+        { name: '转化', d0: [60435, 54108, 40603, 50577, 26221, 57615, 38373, 8112, 626, 1863.09][8], d1: [59636, 54030, 40323, 50321, 26321, 57099, 40298, 8020, 586, 1747.86][8] },
+        { name: '收入', d0: [60435, 54108, 40603, 50577, 26221, 57615, 38373, 8112, 626, 1863.09][9], d1: [59636, 54030, 40323, 50321, 26321, 57099, 40298, 8020, 586, 1747.86][9] }
+    ];
+
+    function chg(a, b) { return (!a || !b) ? 0 : (b === 0 ? 0 : ((a - b) / Math.abs(b) * 100)); }
+    function fmt(v) {
+        if (v === undefined || v === null || isNaN(v)) return '-';
+        if (v >= 100000000) return (v / 100000000).toFixed(2) + '亿';
+        if (v >= 10000) return (v / 10000).toFixed(1) + '万';
+        if (v >= 1000) return (v / 1000).toFixed(1) + '千';
+        return v.toFixed(0);
+    }
+    function color(c) {
+        if (c <= -10) return '#F53F3F';
+        if (c <= -5) return '#FF7D00';
+        if (c < 0) return '#FFCD00';
+        return '#00B42A';
+    }
+
+    // 宽度映射：用log让量级差距不悬殊
+    var logs = steps.map(function(s) { return Math.log10(Math.max(s.d0, s.d1) + 1); });
+    var maxLog = Math.max.apply(null, logs);
+    var minLog = Math.min.apply(null, logs);
+
+    var colD0 = document.getElementById('funnelD0');
+    var colD1 = document.getElementById('funnelD1');
+    var htmlD0 = '', htmlD1 = '', htmlLabel = '';
+
+    for (var i = 0; i < steps.length; i++) {
+        var s = steps[i];
+        var c = chg(s.d0, s.d1);
+        var w = 30 + 70 * (logs[i] - minLog) / (maxLog - minLog);
+        var cl = color(c);
+        var chgStr = (c >= 0 ? '+' : '') + c.toFixed(2) + '%';
+        var arrow = i < steps.length - 1 ? '<div class="funnel-arrow">▼</div>' : '';
+
+        htmlD0 += '<div class="funnel-step" style="width:' + w + '%;background:' + cl + ';margin:0 auto;">' +
+            '<span class="step-name">' + s.name + '</span>' +
+            '<span class="step-val">' + fmt(s.d0) + '</span>' +
+            '<span class="step-chg">' + chgStr + '</span></div>' + arrow;
+
+        htmlD1 += '<div class="funnel-step step-gray" style="width:' + w + '%;margin:0 auto;">' +
+            '<span class="step-name">' + s.name + '</span>' +
+            '<span class="step-val">' + fmt(s.d1) + '</span></div>' + arrow;
+
+        // 转化率
+        var rateStr = '';
+        if (i > 0) {
+            var r0 = steps[i - 1].d0 > 0 ? (s.d0 / steps[i - 1].d0 * 100).toFixed(2) + '%' : '-';
+            rateStr = '<span class="rate">转化率 ' + r0 + '</span>';
+        }
+        htmlLabel += '<div class="funnel-label-item">' + s.name + rateStr + '</div>' +
+            (i < steps.length - 1 ? '<div class="funnel-arrow" style="color:#C9CDD4;font-size:10px;">▼</div>' : '');
+    }
+
+    colD0.innerHTML = htmlD0;
+    colD1.innerHTML = htmlD1;
+    document.getElementById('funnelLabel').innerHTML = htmlLabel;
+})();
+
+// === 广告漏斗对比（三日期） ===
+(function renderFunnelChart() {
+    const chart = echarts.init(document.getElementById('chart-funnel'));
+    const labels = ["广告位请求量", "直投参竞", "DSP参竞", "直投返回", "DSP返回", "广告位返回", "广告位曝光", "广告位点击", "转化", "计费"];
+    const d0Data = [60435, 54108, 40603, 50577, 26221, 57615, 38373, 8112, 626, 1863.09];
+    const d1Data = [59636, 54030, 40323, 50321, 26321, 57099, 40298, 8020, 586, 1747.86];
+    const d7Data = [75118, 0, 0, 0, 0, 0, 51679, 0, 0, 1705.36];
+
+    chart.setOption({
+        tooltip: { trigger: 'axis' },
+        legend: { data: ['20260426', '20260425', '20260419'], top: 0 },
+        grid: { left: 80, right: 30, top: 40, bottom: 30 },
+        xAxis: { type: 'category', data: labels },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: function(v) {
+                    if (v >= 100000000) return (v / 100000000).toFixed(1) + '亿';
+                    if (v >= 10000) return (v / 10000).toFixed(0) + '万';
+                    return v;
+                }
+            }
+        },
+        series: [
+            { name: '20260426', type: 'bar', barWidth: '25%', data: d0Data, itemStyle: { color: '#4080FF' } },
+            { name: '20260425', type: 'bar', barWidth: '25%', data: d1Data, itemStyle: { color: '#C9CDD4' } },
+            { name: '20260419', type: 'bar', barWidth: '25%', data: d7Data, itemStyle: { color: '#E2E6EA' } }
+        ]
+    });
+    window.addEventListener('resize', () => chart.resize());
+})();
+
+// === 收入波动贡献归因（标准垂直 ECharts 瀑布图） ===
+(function renderWaterfall() {
+    const chart = echarts.init(document.getElementById('chart-waterfall'));
+    const wfData = [{"name": "前天收入", "value": 1747.86, "type": "start"}, {"name": "请求量影响", "value": 23.42, "type": "change"}, {"name": "填充率影响", "value": -7.62, "type": "change"}, {"name": "展示率影响", "value": -99.29, "type": "change"}, {"name": "eCPM影响", "value": 198.72, "type": "change"}, {"name": "昨日收入", "value": 1863.09, "type": "end"}];
+
+    if (!wfData || wfData.length === 0) {
+        document.getElementById('chart-waterfall').innerHTML = '<div style="text-align:center;padding:40px;color:#86909C;">暂无瀑布图数据</div>';
+        return;
+    }
+
+    // 构建标准瀑布图：辅助(透明底部) + 正贡献(绿) + 负贡献(红)
+    const xData = [];
+    const helperData = [];   // 透明辅助柱（撑底，使柱子浮起来）
+    const positiveData = []; // 正贡献柱（绿色）
+    const negativeData = []; // 负贡献柱（红色）
+    const totalData = [];    // 起始/结束柱
+    let base = 0;
+    const startVal = wfData[0].value;
+
+    wfData.forEach(function(item) {
+        xData.push(item.name);
+
+        if (item.type === 'start') {
+            // 起始值：从0到value，灰色实心
+            helperData.push(0);
+            positiveData.push(0);
+            negativeData.push(0);
+            totalData.push(item.value);
+            base = item.value;
+        } else if (item.type === 'end') {
+            // 结束值：从0到value，蓝色实心
+            // 结束值的底=0，高度=value
+            helperData.push(0);
+            positiveData.push(0);
+            negativeData.push(0);
+            totalData.push(item.value);
+        } else {
+            // 增减量：正贡献绿色，负贡献红色
+            const val = item.value;
+            totalData.push(0); // 非起止项不显示total柱
+            if (val >= 0) {
+                // 正贡献：辅助柱从base开始（透明），正贡献柱高度=val（绿色）
+                helperData.push(base);
+                positiveData.push(val);
+                negativeData.push(0);
+                base += val;
+            } else {
+                // 负贡献：辅助柱从base+val开始（透明），负贡献柱高度=|val|（红色）
+                helperData.push(base + val);
+                positiveData.push(0);
+                negativeData.push(Math.abs(val));
+                base += val;
+            }
+        }
+    });
+
+    // 通用 label 格式化
+    function fmtLabel(val, wan) {
+        if (wan && Math.abs(val) >= 10000) return (val / 10000).toFixed(1) + '万';
+        if (Math.abs(val) >= 10000) return (val / 10000).toFixed(1) + '万';
+        return val.toFixed(0);
+    }
+
+    chart.setOption({
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: { type: 'shadow' },
+            formatter: function(params) {
+                const idx = params[0].dataIndex;
+                const d = wfData[idx];
+                let txt = '<b>' + d.name + '</b><br/>';
+                if (d.type === 'start' || d.type === 'end') {
+                    txt += '收入: ' + fmtLabel(d.value, true);
+                } else {
+                    txt += '贡献: ' + (d.value >= 0 ? '+' : '') + fmtLabel(d.value, true) +
+                           '<br/>占比: ' + (d.value / Math.abs(startVal) * 100).toFixed(1) + '%';
+                }
+                return txt;
+            }
+        },
+        grid: { left: 80, right: 40, top: 40, bottom: 60 },
+        legend: {
+            data: ['前天/昨日收入', '正贡献', '负贡献'],
+            top: 5,
+            textStyle: { fontSize: 11, color: '#4E5969' }
+        },
+        xAxis: {
+            type: 'category',
+            data: xData,
+            axisLabel: {
+                rotate: 15,
+                fontSize: 11,
+                color: '#4E5969'
+            }
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: function(v) {
+                    return fmtLabel(v, true);
+                }
+            }
+        },
+        series: [
+            {
+                name: '辅助',
+                type: 'bar',
+                stack: 'waterfall',
+                barWidth: 44,
+                itemStyle: {
+                    borderColor: 'transparent',
+                    color: 'transparent'
+                },
+                emphasis: {
+                    itemStyle: {
+                        borderColor: 'transparent',
+                        color: 'transparent'
+                    }
+                },
+                data: helperData
+            },
+            {
+                name: '前天/昨日收入',
+                type: 'bar',
+                stack: 'waterfall',
+                barWidth: 44,
+                itemStyle: { color: '#86909C' },
+                label: {
+                    show: true,
+                    position: 'top',
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: '#1D2129',
+                    formatter: function(params) {
+                        var d = wfData[params.dataIndex];
+                        if (d.type === 'start' || d.type === 'end') {
+                            return fmtLabel(d.value, true);
+                        }
+                        return '';
+                    }
+                },
+                data: totalData.map(function(val, idx) {
+                    var d = wfData[idx];
+                    var color = d.type === 'start' ? '#86909C' : '#165DFF';
+                    return { value: val, itemStyle: { color: color } };
+                })
+            },
+            {
+                name: '正贡献',
+                type: 'bar',
+                stack: 'waterfall',
+                barWidth: 44,
+                itemStyle: { color: '#00B42A' },
+                label: {
+                    show: true,
+                    position: 'top',
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: '#00B42A',
+                    formatter: function(params) {
+                        if (params.value === 0) return '';
+                        var d = wfData[params.dataIndex];
+                        return '+' + fmtLabel(d.value, true);
+                    }
+                },
+                data: positiveData
+            },
+            {
+                name: '负贡献',
+                type: 'bar',
+                stack: 'waterfall',
+                barWidth: 44,
+                itemStyle: { color: '#F53F3F' },
+                label: {
+                    show: true,
+                    position: 'bottom',
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: '#F53F3F',
+                    formatter: function(params) {
+                        if (params.value === 0) return '';
+                        var d = wfData[params.dataIndex];
+                        return fmtLabel(d.value, true);
+                    }
+                },
+                data: negativeData
+            }
+        ]
+    });
+    window.addEventListener('resize', () => chart.resize());
+})();
+
+// === 大盘对比（波动幅度对比） ===
+(function renderMarketCompare() {
+    const chart = echarts.init(document.getElementById('chart-market-compare'));
+    const data = [{"name": "填充率", "media_chg": -0.43, "market_chg": 0.17, "verdict": "需结合其他指标判断"}, {"name": "展示率", "media_chg": -5.63, "market_chg": -1.81, "verdict": "媒体特有波动"}, {"name": "eCPM", "media_chg": 11.94, "market_chg": 0.75, "verdict": "媒体特有波动"}];
+
+    chart.setOption({
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: { type: 'shadow' },
+            formatter: function(params) {
+                let txt = params[0].name + '<br/>';
+                params.forEach(function(p) {
+                    txt += p.marker + p.seriesName + ': ' + (p.value >= 0 ? '+' : '') + p.value.toFixed(2) + '%<br/>';
+                });
+                // 判定
+                const d = data[params[0].dataIndex];
+                if (d) txt += '<b>判定：' + d.verdict + '</b>';
+                return txt;
+            }
+        },
+        legend: { data: ['媒体环比', '大盘环比'], top: 0 },
+        grid: { left: 80, right: 40, top: 40, bottom: 20 },
+        xAxis: {
+            type: 'value',
+            axisLabel: { formatter: '{value}%' }
+        },
+        yAxis: {
+            type: 'category',
+            data: data.map(d => d.name)
+        },
+        series: [
+            {
+                name: '媒体环比',
+                type: 'bar',
+                barWidth: '25%',
+                data: data.map(d => ({
+                    value: d.media_chg,
+                    itemStyle: { color: d.media_chg >= 0 ? '#4080FF' : '#F53F3F' }
+                })),
+                label: {
+                    show: true,
+                    position: 'right',
+                    formatter: function(p) { return (p.value >= 0 ? '+' : '') + p.value.toFixed(2) + '%'; }
+                }
+            },
+            {
+                name: '大盘环比',
+                type: 'bar',
+                barWidth: '25%',
+                data: data.map(d => ({
+                    value: d.market_chg,
+                    itemStyle: { color: d.market_chg >= 0 ? '#86909C' : '#C9CDD4' }
+                })),
+                label: {
+                    show: true,
+                    position: 'right',
+                    formatter: function(p) { return (p.value >= 0 ? '+' : '') + p.value.toFixed(2) + '%'; }
+                }
+            }
+        ]
+    });
+    window.addEventListener('resize', () => chart.resize());
+})();
+
+// === eCPM 因子拆解 ===
+(function renderEcpmFactor() {
+    const chart = echarts.init(document.getElementById('chart-ecpm-factor'));
+    const factorData = [{"name": "广告主出价", "chg": 8.01}, {"name": "pCTR", "chg": 1.62}, {"name": "factor", "chg": 2.19}, {"name": "pCVR", "chg": 3.8}];
+
+    chart.setOption({
+        tooltip: { trigger: 'axis' },
+        grid: { left: 100, right: 40, top: 20, bottom: 30 },
+        xAxis: { type: 'value', axisLabel: { formatter: '{value}%' } },
+        yAxis: { type: 'category', data: factorData.map(d => d.name) },
+        series: [{
+            type: 'bar',
+            data: factorData.map(d => ({
+                value: d.chg,
+                itemStyle: { color: d.chg >= 0 ? '#00B42A' : '#F53F3F' }
+            })),
+            barWidth: 20,
+            label: { show: true, position: 'right', formatter: '{c}%' }
+        }]
+    });
+    window.addEventListener('resize', () => chart.resize());
+})();
+
+// === DSP 不参竞原因柱状图 ===
+(function renderDspReason() {
+    const data = [{"pt_d": "20260426", "media_name": "2048大合成", "dspnbcode": "204", "reason_name": "204-不参竞争", "request_qty": "17905"}, {"pt_d": "20260426", "media_name": "2048大合成", "dspnbcode": "14", "reason_name": "14-素材规格不匹配", "request_qty": "2690"}, {"pt_d": "20260426", "media_name": "2048大合成", "dspnbcode": "11", "reason_name": "11-定向无广告", "request_qty": "2680"}, {"pt_d": "20260426", "media_name": "2048大合成", "dspnbcode": "502", "reason_name": "502-服务器异常", "request_qty": "1384"}, {"pt_d": "20260426", "media_name": "2048大合成", "dspnbcode": "8", "reason_name": "8-用户不匹配", "request_qty": "1164"}, {"pt_d": "20260426", "media_name": "2048大合成", "dspnbcode": "22", "reason_name": "22", "request_qty": "794"}, {"pt_d": "20260426", "media_name": "2048大合成", "dspnbcode": "45", "reason_name": "45", "request_qty": "610"}, {"pt_d": "20260426", "media_name": "2048大合成", "dspnbcode": "41", "reason_name": "41", "request_qty": "321"}, {"pt_d": "20260426", "media_name": "2048大合成", "dspnbcode": "408", "reason_name": "408-超时", "request_qty": "283"}, {"pt_d": "20260426", "media_name": "2048大合成", "dspnbcode": "18", "reason_name": "18", "request_qty": "147"}, {"pt_d": "20260426", "media_name": "2048大合成", "dspnbcode": "29", "reason_name": "29", "request_qty": "26"}, {"pt_d": "20260426", "media_name": "2048大合成", "dspnbcode": "42", "reason_name": "42", "request_qty": "25"}, {"pt_d": "20260426", "media_name": "2048大合成", "dspnbcode": "249", "reason_name": "249", "request_qty": "18"}, {"pt_d": "20260426", "media_name": "2048大合成", "dspnbcode": "47", "reason_name": "47", "request_qty": "16"}, {"pt_d": "20260426", "media_name": "2048大合成", "dspnbcode": "44", "reason_name": "44", "request_qty": "5"}, {"pt_d": "20260426", "media_name": "2048大合成", "dspnbcode": "39", "reason_name": "39", "request_qty": "5"}, {"pt_d": "20260426", "media_name": "2048大合成", "dspnbcode": "37", "reason_name": "37", "request_qty": "5"}, {"pt_d": "20260426", "media_name": "2048大合成", "dspnbcode": "400", "reason_name": "400", "request_qty": "4"}, {"pt_d": "20260426", "media_name": "2048大合成", "dspnbcode": "13", "reason_name": "13-DSP底价过滤", "request_qty": "1"}, {"pt_d": "20260426", "media_name": "2048大合成", "dspnbcode": "23", "reason_name": "23", "request_qty": "1"}, {"pt_d": "20260425", "media_name": "2048大合成", "dspnbcode": "204", "reason_name": "204-不参竞争", "request_qty": "17873"}, {"pt_d": "20260425", "media_name": "2048大合成", "dspnbcode": "14", "reason_name": "14-素材规格不匹配", "request_qty": "2659"}, {"pt_d": "20260425", "media_name": "2048大合成", "dspnbcode": "11", "reason_name": "11-定向无广告", "request_qty": "2656"}, {"pt_d": "20260425", "media_name": "2048大合成", "dspnbcode": "502", "reason_name": "502-服务器异常", "request_qty": "1380"}, {"pt_d": "20260425", "media_name": "2048大合成", "dspnbcode": "8", "reason_name": "8-用户不匹配", "request_qty": "1076"}, {"pt_d": "20260425", "media_name": "2048大合成", "dspnbcode": "22", "reason_name": "22", "request_qty": "723"}, {"pt_d": "20260425", "media_name": "2048大合成", "dspnbcode": "45", "reason_name": "45", "request_qty": "531"}, {"pt_d": "20260425", "media_name": "2048大合成", "dspnbcode": "41", "reason_name": "41", "request_qty": "277"}, {"pt_d": "20260425", "media_name": "2048大合成", "dspnbcode": "408", "reason_name": "408-超时", "request_qty": "254"}, {"pt_d": "20260425", "media_name": "2048大合成", "dspnbcode": "18", "reason_name": "18", "request_qty": "132"}, {"pt_d": "20260425", "media_name": "2048大合成", "dspnbcode": "29", "reason_name": "29", "request_qty": "34"}, {"pt_d": "20260425", "media_name": "2048大合成", "dspnbcode": "42", "reason_name": "42", "request_qty": "23"}, {"pt_d": "20260425", "media_name": "2048大合成", "dspnbcode": "249", "reason_name": "249", "request_qty": "19"}, {"pt_d": "20260425", "media_name": "2048大合成", "dspnbcode": "47", "reason_name": "47", "request_qty": "12"}, {"pt_d": "20260425", "media_name": "2048大合成", "dspnbcode": "400", "reason_name": "400", "request_qty": "7"}, {"pt_d": "20260425", "media_name": "2048大合成", "dspnbcode": "37", "reason_name": "37", "request_qty": "6"}, {"pt_d": "20260425", "media_name": "2048大合成", "dspnbcode": "39", "reason_name": "39", "request_qty": "2"}, {"pt_d": "20260425", "media_name": "2048大合成", "dspnbcode": "23", "reason_name": "23", "request_qty": "1"}, {"pt_d": "20260419", "media_name": "2048大合成", "dspnbcode": "204", "reason_name": "204-不参竞争", "request_qty": "21410"}, {"pt_d": "20260419", "media_name": "2048大合成", "dspnbcode": "14", "reason_name": "14-素材规格不匹配", "request_qty": "3324"}, {"pt_d": "20260419", "media_name": "2048大合成", "dspnbcode": "11", "reason_name": "11-定向无广告", "request_qty": "3315"}, {"pt_d": "20260419", "media_name": "2048大合成", "dspnbcode": "502", "reason_name": "502-服务器异常", "request_qty": "1762"}, {"pt_d": "20260419", "media_name": "2048大合成", "dspnbcode": "8", "reason_name": "8-用户不匹配", "request_qty": "1260"}, {"pt_d": "20260419", "media_name": "2048大合成", "dspnbcode": "22", "reason_name": "22", "request_qty": "1003"}, {"pt_d": "20260419", "media_name": "2048大合成", "dspnbcode": "45", "reason_name": "45", "request_qty": "838"}, {"pt_d": "20260419", "media_name": "2048大合成", "dspnbcode": "408", "reason_name": "408-超时", "request_qty": "213"}, {"pt_d": "20260419", "media_name": "2048大合成", "dspnbcode": "41", "reason_name": "41", "request_qty": "170"}, {"pt_d": "20260419", "media_name": "2048大合成", "dspnbcode": "18", "reason_name": "18", "request_qty": "140"}, {"pt_d": "20260419", "media_name": "2048大合成", "dspnbcode": "42", "reason_name": "42", "request_qty": "51"}, {"pt_d": "20260419", "media_name": "2048大合成", "dspnbcode": "29", "reason_name": "29", "request_qty": "41"}, {"pt_d": "20260419", "media_name": "2048大合成", "dspnbcode": "249", "reason_name": "249", "request_qty": "36"}, {"pt_d": "20260419", "media_name": "2048大合成", "dspnbcode": "47", "reason_name": "47", "request_qty": "12"}, {"pt_d": "20260419", "media_name": "2048大合成", "dspnbcode": "39", "reason_name": "39", "request_qty": "6"}, {"pt_d": "20260419", "media_name": "2048大合成", "dspnbcode": "44", "reason_name": "44", "request_qty": "4"}, {"pt_d": "20260419", "media_name": "2048大合成", "dspnbcode": "37", "reason_name": "37", "request_qty": "4"}, {"pt_d": "20260419", "media_name": "2048大合成", "dspnbcode": "600", "reason_name": "600", "request_qty": "2"}, {"pt_d": "20260419", "media_name": "2048大合成", "dspnbcode": "400", "reason_name": "400", "request_qty": "1"}, {"pt_d": "20260419", "media_name": "2048大合成", "dspnbcode": "200", "reason_name": "200-正常", "request_qty": "1"}];
+    if (!data || data.length === 0) {
+        document.getElementById('chart-dsp-reason').innerHTML = '<div style="text-align:center;color:#86909C;padding:40px;">暂无数据</div>';
+        return;
+    }
+    const chart = echarts.init(document.getElementById('chart-dsp-reason'));
+
+    // 按 pt_d 分组
+    const ptDays = [...new Set(data.map(d => d.pt_d))].sort().reverse();
+    const reasons = [...new Set(data.map(d => d.reason_name))];
+
+    const series = ptDays.map((pt, idx) => ({
+        name: pt,
+        type: 'bar',
+        barWidth: Math.max(10, 25 / ptDays.length) + '%',
+        data: reasons.map(r => {
+            const item = data.find(d => d.pt_d === pt && d.reason_name === r);
+            return item ? item.request_qty : 0;
+        }),
+        itemStyle: { color: idx === 0 ? '#4080FF' : (idx === 1 ? '#C9CDD4' : '#E2E6EA') }
+    }));
+
+    chart.setOption({
+        tooltip: { trigger: 'axis' },
+        legend: { data: ptDays, top: 0 },
+        grid: { left: 120, right: 30, top: 30, bottom: 20 },
+        xAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: function(v) {
+                    if (v >= 10000) return (v / 10000).toFixed(1) + '万';
+                    if (v >= 1000) return (v / 1000).toFixed(0) + '千';
+                    return v;
+                }
+            }
+        },
+        yAxis: { type: 'category', data: reasons },
+        series: series
+    });
+    window.addEventListener('resize', () => chart.resize());
+})();
+
+// === 曝光失败原因柱状图 ===
+(function renderErrorCode() {
+    const data = [{"pt_d": "20260426", "media_name": "2048大合成", "error_code": "30079", "error_qty": "35270"}, {"pt_d": "20260426", "media_name": "2048大合成", "error_code": "30014", "error_qty": "6478"}, {"pt_d": "20260426", "media_name": "2048大合成", "error_code": "30013", "error_qty": "996"}, {"pt_d": "20260426", "media_name": "2048大合成", "error_code": "30094", "error_qty": "882"}, {"pt_d": "20260426", "media_name": "2048大合成", "error_code": "30011", "error_qty": "417"}, {"pt_d": "20260426", "media_name": "2048大合成", "error_code": "30083", "error_qty": "226"}, {"pt_d": "20260426", "media_name": "2048大合成", "error_code": "30066", "error_qty": "201"}, {"pt_d": "20260426", "media_name": "2048大合成", "error_code": "30026", "error_qty": "138"}, {"pt_d": "20260426", "media_name": "2048大合成", "error_code": "30084", "error_qty": "48"}, {"pt_d": "20260425", "media_name": "2048大合成", "error_code": "30079", "error_qty": "35209"}, {"pt_d": "20260425", "media_name": "2048大合成", "error_code": "30014", "error_qty": "6273"}, {"pt_d": "20260425", "media_name": "2048大合成", "error_code": "30013", "error_qty": "1019"}, {"pt_d": "20260425", "media_name": "2048大合成", "error_code": "30094", "error_qty": "983"}, {"pt_d": "20260425", "media_name": "2048大合成", "error_code": "30011", "error_qty": "512"}, {"pt_d": "20260425", "media_name": "2048大合成", "error_code": "30083", "error_qty": "258"}, {"pt_d": "20260425", "media_name": "2048大合成", "error_code": "30066", "error_qty": "237"}, {"pt_d": "20260425", "media_name": "2048大合成", "error_code": "30026", "error_qty": "130"}, {"pt_d": "20260425", "media_name": "2048大合成", "error_code": "30084", "error_qty": "78"}, {"pt_d": "20260425", "media_name": "2048大合成", "error_code": "30090", "error_qty": "43"}, {"pt_d": "20260419", "media_name": "2048大合成", "error_code": "30079", "error_qty": "44302"}, {"pt_d": "20260419", "media_name": "2048大合成", "error_code": "30014", "error_qty": "7416"}, {"pt_d": "20260419", "media_name": "2048大合成", "error_code": "30094", "error_qty": "1176"}, {"pt_d": "20260419", "media_name": "2048大合成", "error_code": "30013", "error_qty": "907"}, {"pt_d": "20260419", "media_name": "2048大合成", "error_code": "30011", "error_qty": "637"}, {"pt_d": "20260419", "media_name": "2048大合成", "error_code": "30066", "error_qty": "386"}, {"pt_d": "20260419", "media_name": "2048大合成", "error_code": "30083", "error_qty": "234"}, {"pt_d": "20260419", "media_name": "2048大合成", "error_code": "30026", "error_qty": "144"}, {"pt_d": "20260419", "media_name": "2048大合成", "error_code": "30084", "error_qty": "77"}];
+    if (!data || data.length === 0) {
+        document.getElementById('chart-error-code').innerHTML = '<div style="text-align:center;color:#86909C;padding:40px;">暂无数据</div>';
+        return;
+    }
+    const chart = echarts.init(document.getElementById('chart-error-code'));
+
+    const ptDays = [...new Set(data.map(d => d.pt_d))].sort().reverse();
+    const codes = [...new Set(data.map(d => d.error_code))];
+
+    const series = ptDays.map((pt, idx) => ({
+        name: pt,
+        type: 'bar',
+        barWidth: Math.max(10, 25 / ptDays.length) + '%',
+        data: codes.map(c => {
+            const item = data.find(d => d.pt_d === pt && d.error_code === c);
+            return item ? item.error_qty : 0;
+        }),
+        itemStyle: { color: idx === 0 ? '#F53F3F' : (idx === 1 ? '#FFCD00' : '#E2E6EA') }
+    }));
+
+    chart.setOption({
+        tooltip: { trigger: 'axis' },
+        legend: { data: ptDays, top: 0 },
+        grid: { left: 120, right: 30, top: 30, bottom: 20 },
+        xAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: function(v) {
+                    if (v >= 10000) return (v / 10000).toFixed(1) + '万';
+                    if (v >= 1000) return (v / 1000).toFixed(0) + '千';
+                    return v;
+                }
+            }
+        },
+        yAxis: { type: 'category', data: codes },
+        series: series
+    });
+    window.addEventListener('resize', () => chart.resize());
+})();
 </script>
 </body>
 </html>
